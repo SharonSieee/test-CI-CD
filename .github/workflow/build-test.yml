@@ -1,0 +1,46 @@
+name: Reusable Build & Test
+
+on:
+  workflow_call:
+    # inputs:
+    #   python-version:
+    #     required: true
+    #     type: string
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    #matrix implement
+    strategy:
+      matrix:
+        python-version: ["3.9", "3.10", "3.11"]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - name: test
+        run: |
+          echo "Running on Python ${{ matrix.python-version }}"
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          #different version using matrix
+          python-version: ${{ matrix.python-version }}
+          
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest
+
+      - name: Build (simulate)
+        run: |
+          echo "🛠️ Simulating build process..."
+          mkdir -p build
+          echo "hello" > build/output.txt
+
+      - name: Run tests
+        run: |
+          pytest
